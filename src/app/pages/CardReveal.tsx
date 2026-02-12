@@ -13,7 +13,12 @@ function HandwritingMessage({ text }: { text: string }) {
   const characters = text.split('');
 
   return (
-    <div className="font-['Gloria_Hallelujah', 'Indie_Flower', 'Itim', 'cursive'] text-lg md:text-xl text-primary/80 leading-snug text-center px-6 italic">
+    <div className="text-lg md:text-xl text-primary/80 leading-relaxed text-center px-6 italic w-full max-w-full" style={{ 
+      whiteSpace: 'normal',
+      wordWrap: 'break-word',
+      overflowWrap: 'break-word',
+      wordBreak: 'break-word'
+    }}>
       {characters.map((char, index) => (
         <motion.span
           key={index}
@@ -24,6 +29,7 @@ function HandwritingMessage({ text }: { text: string }) {
             delay: 2.2 + (index * 0.05), // Start after polaroid reveal
             ease: "easeIn"
           }}
+          style={{ display: 'inline' }}
         >
           {char}
         </motion.span>
@@ -81,7 +87,7 @@ export default function CardReveal() {
           >
             <Heart className="w-16 h-16 text-primary fill-primary drop-shadow-[0_0_10px_rgba(233,74,119,0.3)]" />
           </motion.div>
-          <p className="text-primary font-['Itim'] text-xl font-medium animate-pulse">
+          <p className="text-primary text-xl font-medium animate-pulse">
             {imageLoaded ? 'กำลังเปิดเซอร์ไพรส์ของคุณ... 💖' : 'กำลังเตรียมเซอร์ไพรส์ของคุณ... 📸'}
           </p>
         </div>
@@ -140,7 +146,7 @@ export default function CardReveal() {
                 <Sparkles className="w-8 h-8 text-white" />
               </motion.div>
             </div>
-            <p className="mt-8 text-white font-['Caveat'] text-4xl font-bold tracking-widest drop-shadow-md">
+            <p className="mt-8 text-white text-4xl font-bold tracking-widest drop-shadow-md">
               แตะเพื่อเปิด...
             </p>
           </div>
@@ -174,7 +180,7 @@ export default function CardReveal() {
             </div>
 
             {/* Polaroid Bottom Section (Handwriting Area) */}
-            <div className="mt-8 w-full flex-1 flex flex-col items-center justify-center min-h-[80px]">
+            <div className="mt-8 w-full flex-1 flex flex-col items-center justify-center min-h-[80px] max-w-full overflow-hidden">
               <AnimatePresence>
                 {isOpen && (
                   <HandwritingMessage text={card.message} />
@@ -184,7 +190,7 @@ export default function CardReveal() {
 
             {/* Fake Polaroid Texture/Signature */}
             <div className="absolute bottom-4 right-6 opacity-30">
-              <span className="font-['Caveat'] text-sm italic">Feb 2026</span>
+              <span className="text-sm italic opacity-70">Feb 2026</span>
             </div>
           </div>
         </motion.div>

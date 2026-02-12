@@ -16,7 +16,9 @@ export default function CardLanding() {
   });
   const [escapeCount, setEscapeCount] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const noThanksRef = useRef<HTMLButtonElement>(null);
+  const originalPositionRef = useRef<{ left: number; top: number } | null>(null);
 
   useEffect(() => {
     const checkCard = async () => {
@@ -43,37 +45,74 @@ export default function CardLanding() {
   }, [cardId]);
 
   const handleOpenCard = () => {
-    navigate(`/card/${cardId}/reveal`);
+    setShowConfetti(true);
+    setTimeout(() => {
+      navigate(`/card/${cardId}/reveal`);
+    }, 2000);
   };
 
   const handleNoThanksHover = () => {
-    const padding = 12;
+    const padding = 16;
     const innerWidth = window.innerWidth;
     const innerHeight = window.innerHeight;
 
-    // Get button's layout origin (position without transform) so we can clamp translate(x,y) to keep it on screen
-    const rect = noThanksRef.current?.getBoundingClientRect();
-    const layoutLeft = rect ? rect.left - noThanksPosition.x : innerWidth / 2 - 150;
-    const layoutTop = rect ? rect.top - noThanksPosition.y : innerHeight / 2 - 50;
-    const w = rect?.width ?? 200;
-    const h = rect?.height ?? 56;
+    if (!noThanksRef.current) return;
 
-    // Valid translate range so the button stays fully on screen (with padding)
+    const rect = noThanksRef.current.getBoundingClientRect();
+    
+    // Capture the original position on first hover (when transform is still at 0,0)
+    if (!originalPositionRef.current) {
+      originalPositionRef.current = {
+        left: rect.left,
+        top: rect.top
+      };
+    }
+
+    const layoutLeft = originalPositionRef.current.left;
+    const layoutTop = originalPositionRef.current.top;
+    const w = rect.width;
+    const h = rect.height;
+
+    // Calculate the valid translate range to keep button fully on screen
     const minX = -layoutLeft + padding;
     const maxX = innerWidth - layoutLeft - w - padding;
     const minY = -layoutTop + padding;
     const maxY = innerHeight - layoutTop - h - padding;
 
-    // Pick a random position within bounds; ensure range is valid
-    const rangeX = Math.max(0, maxX - minX);
-    const rangeY = Math.max(0, maxY - minY);
-    const newX = Math.round(minX + Math.random() * rangeX);
-    const newY = Math.round(minY + Math.random() * rangeY);
+    // Ensure we have a valid range (handle edge cases where button might be too large)
+    const validMinX = Math.min(minX, maxX);
+    const validMaxX = Math.max(minX, maxX);
+    const validMinY = Math.min(minY, maxY);
+    const validMaxY = Math.max(minY, maxY);
+
+    // Pick a random position within valid bounds
+    const rangeX = validMaxX - validMinX;
+    const rangeY = validMaxY - validMinY;
+    
+    // Ensure we don't move to the exact same position
+    let newX, newY;
+    let attempts = 0;
+    do {
+      newX = Math.round(validMinX + Math.random() * rangeX);
+      newY = Math.round(validMinY + Math.random() * rangeY);
+      attempts++;
+    } while (
+      attempts < 10 && 
+      Math.abs(newX - noThanksPosition.x) < 50 && 
+      Math.abs(newY - noThanksPosition.y) < 50
+    );
 
     setNoThanksPosition({ x: newX, y: newY });
     setEscapeCount((prev) => {
       const next = prev + 1;
       console.log("[no-thanks-button] Run-aways:", next);
+      if (next === 3) {
+        console.log("[no-thanks-button] Giving up after 3 tries.");
+        const openCardButton = document.getElementById("open-card-button");
+        openCardButton?.classList.remove("invisible", "pointer-events-none");
+        const noThanksButton = document.getElementById("no-thanks-button");
+        noThanksButton?.classList.add("invisible")
+      }
       return next;
     });
     setShowTooltip(true);
@@ -173,8 +212,9 @@ export default function CardLanding() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenCard}
-              className="w-full bg-primary text-primary-foreground px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="w-full bg-primary text-primary-foreground px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all invisible pointer-events-none"
               id="open-card-button"
+              aria-hidden="true"
             >
               เปิดการ์ด 💖
             </motion.button>
@@ -234,6 +274,42 @@ export default function CardLanding() {
           </div>
         </motion.div>
       </div>
+
+      {/* Confetti / Burst effect when opening card */}
+      <AnimatePresence>
+        {showConfetti && (
+          <div className="fixed inset-0 pointer-events-none z-[100] flex items-center justify-center">
+            {[...Array(40)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{
+                  y: 0,
+                  x: 0,
+                  scale: 0,
+                  rotate: 0,
+                  opacity: 1,
+                }}
+                animate={{
+                  y: (Math.random() - 0.5) * window.innerHeight * 1.5,
+                  x: (Math.random() - 0.5) * window.innerWidth * 1.5,
+                  scale: [0, 1, 0.5, 0],
+                  rotate: Math.random() * 720,
+                }}
+                transition={{
+                  duration: 2.5,
+                  ease: "easeOut",
+                }}
+                className="absolute text-5xl"
+              >
+                {["💖", "💝", "💕", "💗", "✨", "🌸", "🌷", "🎀", "🤍", "🎁", "💌", "🍫"][
+                  Math.floor(Math.random() * 12)
+                ]}
+              </motion.div>
+            ))}
+
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

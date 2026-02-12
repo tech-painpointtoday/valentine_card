@@ -272,7 +272,7 @@ export default function CreateCard() {
                 <div className="relative">
                   <input
                     type="file"
-                    accept="image/jpeg,image/png"
+                    accept="image/jpeg,image/png,image/heic,image/heif"
                     onChange={handleImageUpload}
                     className="hidden"
                     id="sender-image"
@@ -306,7 +306,7 @@ export default function CreateCard() {
                           <ImageIcon className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
                         )}
                         <p className="text-muted-foreground">
-                          {uploadingSenderImage ? 'กำลังอัปโหลด...' : 'คลิกเพื่ออัปโหลด'}
+                          {uploadingSenderImage ? 'กำลังอัปโหลด...' : 'กดเพื่ออัปโหลด'}
                         </p>
                       </div>
                     )}
@@ -382,7 +382,7 @@ export default function CreateCard() {
                         <label className="block text-sm mb-2">รูปของขวัญ</label>
                         <input
                           type="file"
-                          accept="image/jpeg,image/png"
+                          accept="image/jpeg,image/png,image/heic,image/heif"
                           onChange={(e) => handleGiftImageUpload(gift.id, e)}
                           className="hidden"
                           id={`gift-image-${gift.id}`}
@@ -417,7 +417,7 @@ export default function CreateCard() {
                           ) : (
                             <div className="text-center py-4 p-4">
                               <ImageIcon className="w-8 h-8 text-muted-foreground mx-auto mb-1" />
-                              <p className="text-xs text-muted-foreground">คลิกเพื่ออัปโหลด</p>
+                              <p className="text-xs text-muted-foreground">กดเพื่ออัปโหลด</p>
                             </div>
                           )}
                         </label>

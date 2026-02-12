@@ -55,7 +55,7 @@ export default function GiftSelection() {
       <div className="min-h-screen flex items-center justify-center bg-[#fdf2f4]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
-          <p className="text-primary font-['Itim']">กำลังโหลดของขวัญของคุณ... 🎁</p>
+          <p className="text-primary">กำลังโหลดของขวัญของคุณ... 🎁</p>
         </div>
       </div>
     );
@@ -86,15 +86,15 @@ export default function GiftSelection() {
             </div>
           </motion.div>
 
-          <h1 className="text-4xl md:text-5xl mb-4 font-['Gloria_Hallelujah'] text-primary">
+          <h1 className="text-4xl md:text-5xl mb-4 text-primary">
             เลือกของขวัญพิเศษของคุณ
           </h1>
-          <p className="text-lg text-muted-foreground font-['Itim']">
+          <p className="text-lg text-muted-foreground">
             แฟนวาเลนไทน์ของคุณเตรียมไว้ให้แล้ว คุณชอบอันไหนมากที่สุดคะ?
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="flex flex-wrap justify-center gap-8 mb-16">
           {card.gifts.map((gift: Gift, index: number) => (
             <motion.div
               key={gift.id}
@@ -103,7 +103,7 @@ export default function GiftSelection() {
               transition={{ delay: index * 0.1, duration: 0.5 }}
               whileHover={!selectedGiftId || selectedGiftId === gift.id ? { scale: 1.03, rotate: 0, y: -5 } : {}}
               onClick={() => setSelectedGiftId(gift.id)}
-              className={`relative bg-white p-3 pb-10 shadow-xl cursor-pointer transition-all duration-500 border border-gray-100 ${selectedGiftId === gift.id
+              className={`relative bg-white p-3 pb-10 shadow-xl cursor-pointer transition-all duration-500 border border-gray-100 w-full sm:w-64 md:w-72 ${selectedGiftId === gift.id
                 ? 'ring-4 ring-primary ring-offset-4 ring-offset-[#fdf2f4] z-20'
                 : selectedGiftId
                   ? 'blur-[2px] opacity-40 scale-[0.98] grayscale-[0.2]'
@@ -135,7 +135,7 @@ export default function GiftSelection() {
               </div>
 
               <div className="text-center">
-                <h3 className="text-xl font-['Gloria_Hallelujah'] text-foreground/80 break-words">
+                <h3 className="text-xl text-foreground/80 break-words">
                   {gift.name}
                 </h3>
               </div>
@@ -211,8 +211,8 @@ export default function GiftSelection() {
               animate={{ scale: [0, 1.2, 1], opacity: 1 }}
               className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-2xl border-4 border-primary/20 text-center"
             >
-              <h2 className="text-4xl font-['Gloria_Hallelujah'] text-primary mb-2">เลือกได้เยี่ยมเลย! 🥰</h2>
-              <p className="font-['Itim'] text-xl text-muted-foreground">กำลังเตรียมการ์ดของคุณ...</p>
+              <h2 className="text-4xl text-primary mb-2">เลือกได้เยี่ยมเลย! 🥰</h2>
+              <p className="text-xl text-muted-foreground">กำลังเตรียมการ์ดของคุณ...</p>
             </motion.div>
           </div>
         )}

@@ -58,11 +58,11 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        <h1 className="text-5xl md:text-6xl mb-6 font-['Gloria_Hallelujah'] text-primary tracking-tight">
+        <h1 className="text-5xl md:text-6xl mb-6 font-['Gloria_Hallelujah'] tracking-tight">
           Valentine's Card
         </h1>
 
-        <p className="text-xl text-muted-foreground mb-10 font-['Itim'] leading-relaxed">
+        <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
           สร้างการ์ดวาเลนไทน์สุดพิเศษ <br />
           พร้อมรูปและของขวัญสุดเซอร์ไพรส์ 💖
         </p>
@@ -77,7 +77,7 @@ export default function Home() {
           </motion.button>
         </Link>
 
-        <p className="mt-12 text-muted-foreground/60 font-['Itim'] text-md">
+        <p className="mt-12 text-muted-foreground/60 text-md">
           Made with love by YourHome
         </p>
 
