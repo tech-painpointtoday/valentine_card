@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Heart, Mail, Loader2 } from "lucide-react";
 import { api } from "../utils/api";
 import { prefetchImages } from "../utils";
@@ -47,15 +47,35 @@ export default function CardLanding() {
   };
 
   const handleNoThanksHover = () => {
-    const maxX = window.innerWidth - 180;
-    const maxY = window.innerHeight - 100;
+    const padding = 12;
+    const innerWidth = window.innerWidth;
+    const innerHeight = window.innerHeight;
 
-    // Integer pixel values to avoid sub-pixel jitter/shake when animating
-    const newX = Math.round((Math.random() - 0.5) * maxX * 0.8);
-    const newY = Math.round((Math.random() - 0.5) * maxY * 0.8);
+    // Get button's layout origin (position without transform) so we can clamp translate(x,y) to keep it on screen
+    const rect = noThanksRef.current?.getBoundingClientRect();
+    const layoutLeft = rect ? rect.left - noThanksPosition.x : innerWidth / 2 - 150;
+    const layoutTop = rect ? rect.top - noThanksPosition.y : innerHeight / 2 - 50;
+    const w = rect?.width ?? 200;
+    const h = rect?.height ?? 56;
+
+    // Valid translate range so the button stays fully on screen (with padding)
+    const minX = -layoutLeft + padding;
+    const maxX = innerWidth - layoutLeft - w - padding;
+    const minY = -layoutTop + padding;
+    const maxY = innerHeight - layoutTop - h - padding;
+
+    // Pick a random position within bounds; ensure range is valid
+    const rangeX = Math.max(0, maxX - minX);
+    const rangeY = Math.max(0, maxY - minY);
+    const newX = Math.round(minX + Math.random() * rangeX);
+    const newY = Math.round(minY + Math.random() * rangeY);
 
     setNoThanksPosition({ x: newX, y: newY });
-    setEscapeCount((prev) => prev + 1);
+    setEscapeCount((prev) => {
+      const next = prev + 1;
+      console.log("[no-thanks-button] Run-aways:", next);
+      return next;
+    });
     setShowTooltip(true);
 
     setTimeout(() => setShowTooltip(false), 1500);
@@ -154,52 +174,63 @@ export default function CardLanding() {
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenCard}
               className="w-full bg-primary text-primary-foreground px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all"
+              id="open-card-button"
             >
               เปิดการ์ด 💖
             </motion.button>
 
-            <div className="relative inline-block w-full">
-              <motion.button
-                ref={noThanksRef}
-                onMouseEnter={handleNoThanksHover}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  handleNoThanksHover();
-                }}
-                animate={{
-                  x: noThanksPosition.x,
-                  y: noThanksPosition.y,
-                }}
-                transition={{
-                  type: "tween",
-                  duration: 0.2,
-                  ease: "linear",
-                }}
-                style={{ willChange: "transform" }}
-                className="relative w-full bg-white/95 text-primary font-semibold px-8 py-4 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-xl hover:border-primary/50 hover:bg-white transition-[box-shadow,border-color,background-color]"
-                aria-label="No thanks button - try to click it!"
-              >
-                <span className="drop-shadow-sm">ไม่เอาดีกว่า</span>
-              </motion.button>
-
-              {showTooltip && (
+            <AnimatePresence>
+              {escapeCount < 10 && (
                 <motion.div
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background px-6 py-3 rounded-full text-base font-medium shadow-2xl pointer-events-none z-50 whitespace-nowrap"
+                  key="no-thanks"
+                  className="relative inline-block w-full"
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {
-                    tooltipMessages[
-                    Math.min(
-                      escapeCount - 1,
-                      tooltipMessages.length - 1,
-                    )
-                    ]
-                  }
+                  <motion.button
+                    id="no-thanks-button"
+                    ref={noThanksRef}
+                    onMouseEnter={handleNoThanksHover}
+                    onTouchStart={(e) => {
+                      e.preventDefault();
+                      handleNoThanksHover();
+                    }}
+                    animate={{
+                      x: noThanksPosition.x,
+                      y: noThanksPosition.y,
+                    }}
+                    transition={{
+                      type: "tween",
+                      duration: 0.2,
+                      ease: "linear",
+                    }}
+                    style={{ willChange: "transform" }}
+                    className="relative w-full bg-white/95 text-primary font-semibold px-8 py-4 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-xl hover:border-primary/50 hover:bg-white transition-[box-shadow,border-color,background-color]"
+                    aria-label="No thanks button - try to click it!"
+                  >
+                    <span className="drop-shadow-sm">เปิดการ์ด 💖 xxxx</span>
+                  </motion.button>
+
+                  {showTooltip && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background px-6 py-3 rounded-full text-base font-medium shadow-2xl pointer-events-none z-50 whitespace-nowrap"
+                    >
+                      {
+                        tooltipMessages[
+                        Math.min(
+                          escapeCount - 1,
+                          tooltipMessages.length - 1,
+                        )
+                        ]
+                      }
+                    </motion.div>
+                  )}
                 </motion.div>
               )}
-            </div>
+            </AnimatePresence>
           </div>
         </motion.div>
       </div>
