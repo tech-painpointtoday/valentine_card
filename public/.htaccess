@@ -2,10 +2,11 @@
   RewriteEngine On
   RewriteBase /
   
-  # Don't rewrite files or directories
+  # Don't rewrite actual files (like CSS, JS, images, PHP files)
   RewriteCond %{REQUEST_FILENAME} !-f
+  # Don't rewrite actual directories
   RewriteCond %{REQUEST_FILENAME} !-d
   
-  # Rewrite everything else to index.html to allow client-side routing
-  RewriteRule . /index.html [L]
+  # Route everything through PHP for dynamic meta tags
+  RewriteRule ^(.*)$ meta-handler.php [L,QSA]
 </IfModule>

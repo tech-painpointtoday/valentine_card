@@ -4,10 +4,12 @@ import { motion, AnimatePresence } from "motion/react";
 import { Heart, Mail, Loader2 } from "lucide-react";
 import { api } from "../utils/api";
 import { prefetchImages } from "../utils";
+import { useAudio } from "../contexts/AudioContext";
 
 export default function CardLanding() {
   const { cardId } = useParams();
   const navigate = useNavigate();
+  const { play: playBackgroundMusic } = useAudio();
   const [cardNotFound, setCardNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [noThanksPosition, setNoThanksPosition] = useState({
@@ -19,8 +21,16 @@ export default function CardLanding() {
   const [showConfetti, setShowConfetti] = useState(false);
   const noThanksRef = useRef<HTMLButtonElement>(null);
   const originalPositionRef = useRef<{ left: number; top: number } | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    // Update page title for better UX (meta tags for social media are handled server-side)
+    document.title = "เธอได้รับการ์ดวาเลนไทน์นะ 💖";
+
+    // Initialize sound effect with louder volume
+    audioRef.current = new Audio("/winksound.mp3");
+    audioRef.current.volume = 0.9; // Set volume to 90% for louder playback
+
     const checkCard = async () => {
       if (cardId) {
         try {
@@ -42,9 +52,25 @@ export default function CardLanding() {
     };
 
     checkCard();
+
+    // Cleanup: restore original title
+    return () => {
+      document.title = "สร้างการ์ดวาเลนไทน์";
+    };
   }, [cardId]);
 
   const handleOpenCard = () => {
+    // Play background music if not already playing
+    playBackgroundMusic();
+    
+    // Play sound effect
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0; // Reset to start
+      audioRef.current.play().catch((error) => {
+        console.error("Error playing sound:", error);
+      });
+    }
+    
     setShowConfetti(true);
     setTimeout(() => {
       navigate(`/card/${cardId}/reveal`);
