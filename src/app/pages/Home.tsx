@@ -77,7 +77,7 @@ export default function Home() {
           </motion.button>
         </Link>
 
-        <p className="mt-12 text-muted-foreground/60 text-md">
+        <p className="mt-12 text-muted-foreground/60 text-md font-['Gloria_Hallelujah']">
           Made with love by YourHome
         </p>
 

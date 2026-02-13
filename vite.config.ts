@@ -19,4 +19,17 @@ export default defineConfig({
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  // Server configuration for ngrok and other tunneling services
+  server: {
+    allowedHosts: [
+      'indefinable-nonseasonably-kaycee.ngrok-free.dev',
+      '.ngrok-free.app',
+      '.ngrok.io',
+      '.ngrok.app',
+    ],
+    hmr: {
+      clientPort: 443,
+    },
+  },
 })

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Heart, Sparkles, ArrowRight } from 'lucide-react';
@@ -11,9 +11,16 @@ import { ValentineCard } from '../types';
 function HandwritingMessage({ text }: { text: string }) {
   // Split into words or chars? Chars is better for typewriter.
   const characters = text.split('');
+  
+  // Adjust font size based on message length
+  const getFontSize = (length: number) => {
+    if (length > 200) return 'text-sm md:text-base';
+    if (length > 120) return 'text-base md:text-lg';
+    return 'text-lg md:text-xl';
+  };
 
   return (
-    <div className="text-lg md:text-xl text-primary/80 leading-relaxed text-center px-6 italic w-full max-w-full" style={{ 
+    <div className={`${getFontSize(characters.length)} text-primary/80 leading-relaxed text-center px-4 italic w-full max-w-full pb-4`} style={{ 
       whiteSpace: 'normal',
       wordWrap: 'break-word',
       overflowWrap: 'break-word',
@@ -95,18 +102,34 @@ export default function CardReveal() {
     );
   }
 
+  // Calculate safe scale to prevent corner clipping during rotation
+  // For a card with aspect ratio 4:5.5, when rotated, we need to account for the diagonal
+  // Formula: safe scale = 1 / sqrt(2) for 45° rotation, but for small angles we can be less aggressive
+  // For 1° rotation: we need ~1.015x space, so we scale down to 0.985
+  // Adding extra margin for safety with hover scale of 1.05
+  const maxRotation = 1; // degrees
+  const hoverScale = 1.05;
+  const rotationRad = (maxRotation * Math.PI) / 180;
+  const aspectRatio = 5.5 / 4; // height / width
+  
+  // Calculate bounding box expansion due to rotation
+  const expansionFactor = Math.abs(Math.cos(rotationRad)) + aspectRatio * Math.abs(Math.sin(rotationRad));
+  const baseScale = 0.92; // Base scale to provide comfortable margin
+  const safeScale = baseScale / (expansionFactor * hoverScale);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#fdf2f4] overflow-hidden relative">
-      <div className="max-w-md w-full relative z-10">
+      {/* Add padding to container to prevent clipping */}
+      <div className="max-w-md w-full relative z-10 px-4 py-8">
         <motion.div
           initial={{ rotateY: 0, scale: 0.8, opacity: 0, y: 50 }}
           animate={{
             rotateY: isOpen ? 180 : 0,
-            scale: 1,
+            scale: safeScale,
             opacity: 1,
             y: 0
           }}
-          whileHover={!isOpen ? { scale: 1.05, rotateZ: 1 } : {}}
+          whileHover={!isOpen ? { scale: safeScale * 1.05, rotateZ: maxRotation } : {}}
           onClick={() => !isOpen && setIsOpen(true)}
           transition={{
             rotateY: { duration: 1.4, ease: [0.45, 0.05, 0.55, 0.95] },
@@ -146,7 +169,7 @@ export default function CardReveal() {
                 <Sparkles className="w-8 h-8 text-white" />
               </motion.div>
             </div>
-            <p className="mt-8 text-white text-4xl font-bold tracking-widest drop-shadow-md">
+            <p className="mt-8 text-white text-2xl font-bold tracking-widest drop-shadow-md">
               แตะเพื่อเปิด...
             </p>
           </div>
@@ -158,10 +181,10 @@ export default function CardReveal() {
               WebkitBackfaceVisibility: "hidden",
               transform: "rotateY(180deg)"
             }}
-            className="absolute inset-0 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-sm p-4 pb-16 flex flex-col items-center border border-gray-100"
+            className="absolute inset-0 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-sm p-4 pb-12 flex flex-col items-center border border-gray-100"
           >
-            {/* Polaroid Image Section */}
-            <div className="relative w-full aspect-square bg-[#f0f0f0] overflow-hidden border border-gray-200">
+            {/* Polaroid Image Section - Slightly reduced to leave more room for text */}
+            <div className="relative w-full aspect-[1/0.95] bg-[#f0f0f0] overflow-hidden border border-gray-200">
               <motion.img
                 initial={{ opacity: 0, filter: 'grayscale(50%) brightness(1.2) contrast(0.8)' }}
                 animate={isOpen ? { opacity: 1, filter: 'grayscale(0%) brightness(1) contrast(1)' } : {}}
@@ -179,8 +202,8 @@ export default function CardReveal() {
               />
             </div>
 
-            {/* Polaroid Bottom Section (Handwriting Area) */}
-            <div className="mt-8 w-full flex-1 flex flex-col items-center justify-center min-h-[80px] max-w-full overflow-hidden">
+            {/* Polaroid Bottom Section (Handwriting Area) - Now scrollable */}
+            <div className="mt-6 w-full flex-1 flex flex-col items-center justify-start min-h-[80px] max-h-full overflow-y-auto overflow-x-hidden polaroid-message-scroll px-2">
               <AnimatePresence>
                 {isOpen && (
                   <HandwritingMessage text={card.message} />

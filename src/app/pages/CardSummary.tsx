@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Heart, Download, Share2, Home, Loader2, Sparkles } from 'lucide-react';
@@ -209,9 +209,36 @@ export default function CardSummary() {
 
       // Fallback: Regular download for desktop or unsupported browsers
       debugLogs.push('Using saveAs fallback...');
-      saveAs(blob, fileName);
-      console.log('[DEBUG] Download logs:', debugLogs.join('\n'));
-      toast.success('บันทึกความทรงจำไว้ในเครื่องแล้ว! 💖', { id: toastId });
+      
+      // Special handling for iOS devices - open in new tab for long-press save
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        debugLogs.push('iOS device detected, opening image in new window...');
+        const imageUrl = URL.createObjectURL(blob);
+        const newWindow = window.open(imageUrl, '_blank');
+        
+        if (newWindow) {
+          console.log('[DEBUG] iOS image window opened:', debugLogs.join('\n'));
+          toast.success('กดค้างที่รูปภาพแล้วเลือก "บันทึกรูปภาพ" เพื่อเซฟลงแกลเลอรี่! 💖', { 
+            id: toastId,
+            duration: 8000 
+          });
+        } else {
+          debugLogs.push('Popup blocked, falling back to download link...');
+          // Fallback if popup is blocked
+          const link = document.createElement('a');
+          link.href = imageUrl;
+          link.download = fileName;
+          link.click();
+          URL.revokeObjectURL(imageUrl);
+          toast.success('กดที่ไฟล์ที่ดาวน์โหลดเพื่อบันทึกลงแกลเลอรี่! 💖', { id: toastId, duration: 8000 });
+        }
+      } else {
+        // Desktop or other devices - use regular download
+        saveAs(blob, fileName);
+        console.log('[DEBUG] Download logs:', debugLogs.join('\n'));
+        toast.success('บันทึกความทรงจำไว้ในเครื่องแล้ว! 💖', { id: toastId });
+      }
     } catch (error: any) {
       debugLogs.push(`ERROR: ${error.name} - ${error.message}`);
       debugLogs.push(`Stack: ${error.stack}`);
@@ -369,12 +396,45 @@ export default function CardSummary() {
                 <Heart className="w-4 h-4 md:w-6 md:h-6 fill-current" />
                 <Heart className="w-4 h-4 md:w-6 md:h-6 fill-current" />
               </div>
+
+              {/* Logo */}
+              <div className="flex justify-center mt-4 md:mt-6">
+                <img 
+                  src="/YourHomeLogo.svg" 
+                  alt="Logo" 
+                  className="h-12 md:h-16 opacity-60"
+                  onError={(e) => {
+                    console.error('Logo failed to load');
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+              {/* Tiktok */}
+              <div className="flex items-center justify-center gap-2 mt-3">
+                <span className="text-sm md:text-base text-primary/70">ติดตามเราได้ที่</span>
+                <a 
+                  href="https://www.tiktok.com/@yourhome_officespace?_r=1&_t=ZS-93sM29XsFXD"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full bg-black hover:bg-[#00f2ea] transition-all duration-300 shadow-md hover:shadow-lg hover:scale-110"
+                  aria-label="TikTok"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-5 h-5 md:w-6 md:h-6 fill-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6">
-            <motion.button
+          <div className="grid grid-cols-1 mt-2 gap-3 md:gap-4 mb-4 md:mb-6">
+            {/* Save button temporarily hidden - not reliable on all devices */}
+            {/* <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSaveAsImage}
@@ -383,13 +443,13 @@ export default function CardSummary() {
             >
               <Download className={`w-5 h-5 md:w-6 md:h-6 ${isGenerating ? 'animate-bounce' : ''}`} />
               {isGenerating ? 'กำลังบันทึก...' : 'บันทึกความทรงจำนี้'}
-            </motion.button>
+            </motion.button> */}
 
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleShare}
-              className="flex items-center justify-center gap-2 md:gap-3 bg-white text-primary border-2 border-primary px-4 md:px-8 py-3 md:py-5 rounded-full shadow-xl font-bold text-base md:text-lg"
+              className="flex items-center justify-center gap-2 md:gap-3 bg-primary text-white px-4 md:px-8 py-3 md:py-5 rounded-full shadow-2xl font-bold text-base md:text-lg"
             >
               <Share2 className="w-5 h-5 md:w-6 md:h-6" />
               แชร์ความทรงจำ

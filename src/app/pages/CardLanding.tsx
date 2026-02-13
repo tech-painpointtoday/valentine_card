@@ -248,7 +248,7 @@ export default function CardLanding() {
                     className="relative w-full bg-white/95 text-primary font-semibold px-8 py-4 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-xl hover:border-primary/50 hover:bg-white transition-[box-shadow,border-color,background-color]"
                     aria-label="No thanks button - try to click it!"
                   >
-                    <span className="drop-shadow-sm">เปิดการ์ด 💖 xxxx</span>
+                    <span className="drop-shadow-sm">เปิดการ์ด 💖</span>
                   </motion.button>
 
                   {showTooltip && (
