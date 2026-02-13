@@ -122,15 +122,10 @@ export default function CardLanding() {
 
 
   const tooltipMessages = [
-    "เอ๊ะ! กดไม่ได้นะ 😜",
-    "อย่าปฏิเสธเลย~ 🥺",
     "ลองอีกที ก็ยังไม่ได้ 😏",
     "ยืนยันเลยว่าเปิดนะ! 💕",
-    "กดเปิดซะดีกว่า 💖",
     "ปุ่มนี้มีไว้ประดับเฉยๆ นะ 😂",
-    "กดปุ่มชมพูเถอะ เชื่อเรา...",
     "หนีเร็วกว่าที่คิดใช่ไหมล่าาา",
-    "ยอมแพ้แล้วกด Open Card เถอะ 🙏",
     "รักนะถึงได้แกล้ง 💖",
     "ลองใหม่อีก 100 รอบก็ไม่ได้กดหรอก!",
     "มือไวไม่เท่าใจรักหรอกนะ 🥰",
@@ -145,7 +140,7 @@ export default function CardLanding() {
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
           <p className="text-muted-foreground">
-            กำลังโหลดการ์ดของคุณ...
+            กำลังโหลดการ์ดให้เธออยู่นะ...
           </p>
         </div>
       </div>
@@ -200,11 +195,11 @@ export default function CardLanding() {
           </motion.div>
 
           <h1 className="text-3xl md:text-4xl mb-4">
-            คุณได้รับการ์ดวาเลนไทน์แล้ว 💌
+            เธอได้รับการ์ดวาเลนไทน์นะ
           </h1>
 
           <p className="text-lg text-muted-foreground mb-8">
-            มีคนพิเศษส่งของหวานๆ มาให้คุณ...
+            มีคนส่งเซอร์ไพรส์มาให้เธอด้วยแหละ...
           </p>
 
           <div className="space-y-4">
@@ -216,7 +211,7 @@ export default function CardLanding() {
               id="open-card-button"
               aria-hidden="true"
             >
-              เปิดการ์ด 💖
+              ลองเปิดดูนะ 💖
             </motion.button>
 
             <AnimatePresence>
@@ -248,7 +243,7 @@ export default function CardLanding() {
                     className="relative w-full bg-white/95 text-primary font-semibold px-8 py-4 rounded-xl border-2 border-primary/30 shadow-md hover:shadow-xl hover:border-primary/50 hover:bg-white transition-[box-shadow,border-color,background-color]"
                     aria-label="No thanks button - try to click it!"
                   >
-                    <span className="drop-shadow-sm">เปิดการ์ด 💖</span>
+                    <span className="drop-shadow-sm">ลองเปิดดูนะ 💖</span>
                   </motion.button>
 
                   {showTooltip && (

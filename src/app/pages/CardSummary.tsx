@@ -300,7 +300,7 @@ export default function CardSummary() {
       <div className="min-h-screen flex items-center justify-center bg-[#fdf2f4]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
-          <p className="text-primary">กำลังสร้างความทรงจำของคุณ... ✨</p>
+          <p className="text-primary">เตรียมตัวรอรับเซอร์ไพรส์ได้เล้ย... ✨</p>
         </div>
       </div>
     );
@@ -452,7 +452,7 @@ export default function CardSummary() {
               className="flex items-center justify-center gap-2 md:gap-3 bg-primary text-white px-4 md:px-8 py-3 md:py-5 rounded-full shadow-2xl font-bold text-base md:text-lg"
             >
               <Share2 className="w-5 h-5 md:w-6 md:h-6" />
-              แชร์ความทรงจำ
+              ส่งต่อความน่ารักเลย
             </motion.button>
           </div>
 

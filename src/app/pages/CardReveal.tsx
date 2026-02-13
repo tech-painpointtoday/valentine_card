@@ -95,7 +95,7 @@ export default function CardReveal() {
             <Heart className="w-16 h-16 text-primary fill-primary drop-shadow-[0_0_10px_rgba(233,74,119,0.3)]" />
           </motion.div>
           <p className="text-primary text-xl font-medium animate-pulse">
-            {imageLoaded ? 'กำลังเปิดเซอร์ไพรส์ของคุณ... 💖' : 'กำลังเตรียมเซอร์ไพรส์ของคุณ... 📸'}
+            {imageLoaded ? 'รอแป๊บนึงน้าาาาาาา... 💖' : 'รอแป๊บนึงน้าาาาาาา... 💖'}
           </p>
         </div>
       </div>
@@ -170,7 +170,7 @@ export default function CardReveal() {
               </motion.div>
             </div>
             <p className="mt-8 text-white text-2xl font-bold tracking-widest drop-shadow-md">
-              แตะเพื่อเปิด...
+              เปิดเลยละกัน...
             </p>
           </div>
 
@@ -238,7 +238,7 @@ export default function CardReveal() {
             >
               <Heart className="w-6 h-6 fill-current" />
             </motion.div>
-            <span>เลือกของขวัญของคุณ</span>
+            <span>เลือกดูนะ ว่าเธออยากได้อะไร</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 
             {/* Shiny effect */}

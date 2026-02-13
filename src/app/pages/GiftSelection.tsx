@@ -55,7 +55,7 @@ export default function GiftSelection() {
       <div className="min-h-screen flex items-center justify-center bg-[#fdf2f4]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
-          <p className="text-primary">กำลังโหลดของขวัญของคุณ... 🎁</p>
+          <p className="text-primary">รอลุ้นได้เลยยยย... 🎁</p>
         </div>
       </div>
     );
@@ -87,10 +87,10 @@ export default function GiftSelection() {
           </motion.div>
 
           <h1 className="text-4xl md:text-5xl mb-4 text-primary">
-            เลือกของขวัญพิเศษของคุณ
+            เลือกอันที่เธอชอบหน่อยนะ
           </h1>
           <p className="text-lg text-muted-foreground">
-            แฟนวาเลนไทน์ของคุณเตรียมไว้ให้แล้ว คุณชอบอันไหนมากที่สุดคะ?
+            เราอยากรู้จังว่าเธอจะชอบอันไหนมากที่สุด?
           </p>
         </motion.div>
 
@@ -165,12 +165,12 @@ export default function GiftSelection() {
             {saving ? (
               <>
                 <Loader2 className="w-6 h-6 animate-spin" />
-                กำลังจัดของขวัญให้คุณ...
+                รอแป๊บนึงน้าาา...
               </>
             ) : (
               <>
                 {selectedGiftId && <Sparkles className="w-6 h-6 animate-pulse" />}
-                ยืนยันของขวัญชิ้นนี้
+                 ตกลงเอาอันนี้นะ
               </>
             )}
           </motion.button>
@@ -211,8 +211,7 @@ export default function GiftSelection() {
               animate={{ scale: [0, 1.2, 1], opacity: 1 }}
               className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-2xl border-4 border-primary/20 text-center"
             >
-              <h2 className="text-4xl text-primary mb-2">เลือกได้เยี่ยมเลย! 🥰</h2>
-              <p className="text-xl text-muted-foreground">กำลังเตรียมการ์ดของคุณ...</p>
+              <h2 className="text-4xl text-primary mb-2">ว่าแล้ว เธอต้องเลือกอันนี้แน่ ๆ! 🥰</h2>
             </motion.div>
           </div>
         )}
